@@ -1,0 +1,94 @@
+name: Issue to Lab Automation
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  process-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract Issue Information
+        id: issue_info
+        run: |
+          echo "issue_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          echo "issue_title=${{ github.event.issue.title }}" >> $GITHUB_OUTPUT
+
+      - name: Create Issue Content File
+        run: |
+          mkdir -p .lab-issues
+          cat > .lab-issues/issue-${{ github.event.issue.number }}.md << 'EOF'
+          # Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+
+          **Author:** @${{ github.event.issue.user.login }}
+          **Created:** ${{ github.event.issue.created_at }}
+          **URL:** ${{ github.event.issue.html_url }}
+
+          ## Description
+
+          ${{ github.event.issue.body }}
+
+          ---
+
+          **Labels:** ${{ join(github.event.issue.labels.*.name, ', ') }}
+          EOF
+
+      - name: Create Lab Branch
+        run: |
+          BRANCH_NAME="lab/issue-${{ github.event.issue.number }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create and switch to new branch
+          git checkout -b "$BRANCH_NAME" || git checkout "$BRANCH_NAME"
+
+          # Add the issue file
+          git add .lab-issues/
+
+          # Commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add issue #${{ github.event.issue.number }} content: ${{ github.event.issue.title }}"
+            git push -u origin "$BRANCH_NAME"
+          fi
+
+      - name: Comment on Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = `lab/issue-${context.issue.number}`;
+            const comment = `🤖 **Lab Automation**
+
+            I've created a branch for this lab: \`${branch}\`
+
+            The issue content has been saved to \`.lab-issues/issue-${context.issue.number}.md\`
+
+            To work on this lab with Claude:
+            1. Switch to the branch: \`git checkout ${branch}\`
+            2. Read the issue file: \`.lab-issues/issue-${context.issue.number}.md\`
+            3. Ask Claude to implement the lab based on the issue requirements
+
+            **Issue Details:**
+            - **Title:** ${context.payload.issue.title}
+            - **Number:** #${context.issue.number}
+            - **Branch:** \`${branch}\`
+            `;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
