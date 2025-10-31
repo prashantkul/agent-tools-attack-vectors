@@ -1,65 +1,130 @@
-# Agent Tools Attack Vectors Lab
+# Agent Tools Attack Vectors
 
-This repository contains security labs for exploring agent tool attack vectors.
+Security labs for exploring attack vectors in AI agent tool systems.
 
-## 🤖 GitHub Actions Automation
+## 📚 Available Labs
 
-This repository includes automated workflows to help with lab creation:
+### Lab 1: The "Confused Deputy" Exfiltration CTF
 
-### Issue to Lab Workflow
+**Difficulty**: Intermediate
+**Topics**: Tool composition, data exfiltration, defense strategies
 
-When you create or edit an issue, the workflow automatically:
+A hands-on CTF that teaches the "Confused Deputy" vulnerability pattern, where combining seemingly harmless agent tools creates an attack surface for data exfiltration.
 
-1. **Creates a lab branch** named `lab/issue-{number}`
-2. **Saves issue content** to `.lab-issues/issue-{number}.md`
-3. **Posts a comment** with instructions for working on the lab
+**What you'll learn**:
+- How tool composition creates security vulnerabilities
+- Data exfiltration techniques via URL parameters
+- Defense strategies: allowlists, MCP policies, and monitoring
+- Production-ready agent security practices
 
-### How to Use
+**Technologies**:
+- Google ADK (Agent Development Kit)
+- Gemini 2.0 Flash
+- Model Context Protocol (MCP)
+- Streamlit (for security dashboards)
 
-1. **Create a GitHub Issue** with your lab requirements
-2. **Wait for the automation** to create a branch and save the issue content
-3. **Work with Claude** by:
-   ```bash
-   # Check out the lab branch
-   git checkout lab/issue-{number}
+[**Start Lab →**](confused-deputy-lab/README.md)
 
-   # Read the issue file
-   cat .lab-issues/issue-{number}.md
-   ```
-4. **Ask Claude** to implement the lab based on the issue requirements
+## 🚀 Quick Start
 
-### Manual Access to Issue Content
+### Prerequisites
 
-If you need to access an existing issue (like issue #1):
+- Python 3.9+
+- Google API Key ([Get one here](https://ai.google.dev/))
+
+### Getting Started
 
 ```bash
-# The automation will have created:
-# - Branch: lab/issue-1
-# - File: .lab-issues/issue-1.md
-git checkout lab/issue-1
-cat .lab-issues/issue-1.md
+# 1. Navigate to a lab
+cd confused-deputy-lab
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Set your API key
+export GOOGLE_API_KEY='your-api-key'
+
+# 4. Test your setup
+python test_setup.py
+
+# 5. Start the lab
+python agent/interactive_agent.py
 ```
 
-Then share the content with Claude to start building the lab!
+## 📖 Lab Structure
 
-## Repository Structure
+Each lab includes:
 
-```
-agent-tools-attack-vectors/
-├── .github/
-│   └── workflows/
-│       └── issue-to-lab.yml    # Automation workflow
-├── .lab-issues/                # Issue content files
-│   └── issue-{number}.md       # Individual issue details
-└── README.md                   # This file
-```
+- **📂 Scenario**: A realistic agent with tools
+- **🎯 Objective**: A specific security vulnerability to exploit
+- **🛡️ Defenses**: Multiple defense strategies with implementations
+- **📊 Monitoring**: Security dashboards and logging
+- **📝 Documentation**: Complete setup and teaching guides
 
-## Getting Started
+## 🎓 For Educators
 
-1. Create an issue describing your lab requirements
-2. The automation will set up a branch and save the issue content
-3. Use Claude to implement the lab based on the requirements
+These labs are designed for:
 
-## License
+- University courses on AI security
+- Security training workshops
+- CTF competitions
+- Self-paced learning
 
-This is a security research and educational repository.
+Each lab includes:
+- Detailed teaching guides
+- Progressive difficulty levels
+- Hands-on demonstrations
+- Discussion questions
+- Assessment criteria
+
+## 🔒 Security Notice
+
+These labs contain **intentionally vulnerable code** for educational purposes.
+
+⚠️ **DO NOT** use vulnerable implementations in production systems.
+
+Always implement proper security controls when deploying AI agents.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Add your lab or improvement
+4. Submit a pull request
+
+See individual lab READMEs for specific contribution guidelines.
+
+## 📄 License
+
+This repository is for educational purposes. See LICENSE for details.
+
+## 🔗 Resources
+
+### Agent Security
+
+- [OWASP Top 10 for LLMs](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
+- [Google ADK Documentation](https://github.com/google/adk-python)
+
+### Security Tools
+
+- [Agent Security Bench](https://huggingface.co/datasets/Anthropic/agent-security-bench)
+- [Promptfoo](https://www.promptfoo.dev/)
+- [Garak LLM Scanner](https://github.com/leondz/garak)
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/prashantkul/agent-tools-attack-vectors/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/prashantkul/agent-tools-attack-vectors/discussions)
+
+## 🙏 Acknowledgments
+
+Created for educational purposes based on real-world agent security research.
+
+Special thanks to the AI security community for their ongoing research and tools.
+
+---
+
+**Ready to learn about agent security?** [Start with the Confused Deputy Lab →](confused-deputy-lab/README.md)

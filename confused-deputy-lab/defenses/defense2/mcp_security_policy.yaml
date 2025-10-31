@@ -1,0 +1,111 @@
+# MCP Security Policy Configuration
+# This file defines security rules for agent tools using the Model Context Protocol
+
+version: "1.0"
+policy_name: "Financial Analyst Security Policy"
+
+# Global settings
+settings:
+  default_action: "deny"  # Deny by default, allow explicitly
+  log_all_requests: true
+  log_violations: true
+  alert_on_violations: true
+
+# Tool-specific policies
+tools:
+  read_document:
+    enabled: true
+    rate_limit:
+      max_calls_per_minute: 10
+    parameter_validation:
+      filename:
+        type: "string"
+        pattern: "^[a-zA-Z0-9_&.-]+\\.(pdf|txt|md)$"  # Only allow safe filenames
+        max_length: 100
+        # Block path traversal attempts
+        forbidden_patterns:
+          - "\\.\\."
+          - "/"
+          - "\\\\"
+    logging:
+      log_level: "info"
+      include_content: false  # Don't log file contents (privacy)
+
+  fetch_web_data:
+    enabled: true
+    rate_limit:
+      max_calls_per_minute: 5
+    parameter_validation:
+      url:
+        type: "string"
+        # URL must match allowed domains
+        allowed_domains:
+          - "internal-wiki.company.com"
+          - "api.company.com"
+          - "docs.company.com"
+          - "*.company.com"  # Wildcard for subdomains
+        # Blocked domains (explicit deny list)
+        blocked_domains:
+          - "webhook.site"
+          - "requestbin.com"
+          - "ngrok.io"
+          - "*.burpcollaborator.net"
+        # Protocol restrictions
+        allowed_protocols:
+          - "https"
+        # Block suspicious patterns
+        forbidden_patterns:
+          - "query=.*CONFIDENTIAL"  # Block attempts to exfiltrate in URL
+          - "data=.*CONFIDENTIAL"
+    logging:
+      log_level: "warning"  # Higher scrutiny for network calls
+      include_content: true
+      alert_on_external: true
+
+  list_documents:
+    enabled: true
+    rate_limit:
+      max_calls_per_minute: 3
+    logging:
+      log_level: "info"
+
+# Security rules (cross-tool policies)
+security_rules:
+  # Prevent rapid sequential calls that might indicate automated attack
+  - name: "rate_limit_global"
+    description: "Limit total tool calls across all tools"
+    max_calls_per_minute: 20
+
+  # Detect potential exfiltration patterns
+  - name: "exfiltration_detection"
+    description: "Detect when sensitive data might be exfiltrated"
+    trigger:
+      - tool: "fetch_web_data"
+        after_tool: "read_document"
+        within_seconds: 5
+    action: "block"
+    alert: true
+    log_message: "Potential exfiltration detected: fetch_web_data called shortly after read_document"
+
+  # Block known attack patterns
+  - name: "confused_deputy_protection"
+    description: "Protect against confused deputy attacks"
+    trigger:
+      - tool: "fetch_web_data"
+        url_contains: ["data=", "query=", "content="]
+        url_length_exceeds: 200  # Long URLs might contain exfiltrated data
+    action: "block"
+    alert: true
+
+# Alerting configuration
+alerts:
+  email:
+    enabled: false
+    recipients:
+      - "security@company.com"
+  webhook:
+    enabled: true
+    url: "https://internal-siem.company.com/alerts"
+  log_file:
+    enabled: true
+    path: "./security_alerts.log"

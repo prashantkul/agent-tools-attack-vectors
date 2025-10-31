@@ -1,0 +1,22 @@
+# Confused Deputy Lab - Python Dependencies
+
+# Google Generative AI (for Gemini 2.0 Flash)
+google-genai>=0.2.0
+
+# Web requests
+requests>=2.31.0
+
+# YAML parsing (for MCP policies)
+pyyaml>=6.0.1
+
+# Dashboard and visualization
+streamlit>=1.28.0
+plotly>=5.17.0
+pandas>=2.1.0
+
+# Data validation and utilities
+python-dateutil>=2.8.2
+
+# Optional: For advanced security testing
+# pytest>=7.4.0
+# promptfoo>=0.1.0
