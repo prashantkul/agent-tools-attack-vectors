@@ -91,7 +91,7 @@ python agent/vulnerable_agent.py demo
 ### Interactive Agent (Main Activity)
 
 ```bash
-python agent/interactive_agent.py
+python agent/adk_agent.py
 ```
 
 This starts an interactive chat session where you can attempt the attack.
@@ -165,13 +165,13 @@ pip install -r requirements.txt
 - [ ] All dependencies installed (`pip list` shows google-genai, streamlit, etc.)
 - [ ] GOOGLE_API_KEY environment variable is set
 - [ ] Can run `python agent/vulnerable_agent.py demo` successfully
-- [ ] Can start interactive agent with `python agent/interactive_agent.py`
+- [ ] Can start interactive agent with `python agent/adk_agent.py`
 
 ### Test the Attack Flow
 
 1. **Start the agent**:
    ```bash
-   python agent/interactive_agent.py
+   python agent/adk_agent.py
    ```
 
 2. **Try these prompts**:

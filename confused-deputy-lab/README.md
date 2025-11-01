@@ -75,15 +75,15 @@ pip install -r requirements.txt
 # 3. Set your Google API key
 export GOOGLE_API_KEY='your-api-key-here'
 
-# 4. Run the interactive agent
-python agent/interactive_agent.py
+# 4. Run the Google ADK agent
+python agent/adk_agent.py
 ```
 
 ### Try the Attack
 
 ```bash
-# Start chatting with the agent
-python agent/interactive_agent.py
+# Start chatting with the Google ADK agent
+python agent/adk_agent.py
 
 # Then try these prompts:
 # 1. "What tools do you have?"
@@ -159,7 +159,9 @@ confused-deputy-lab/
 │
 ├── agent/                            # Agent implementations
 │   ├── vulnerable_agent.py           # Demo of vulnerability
-│   └── interactive_agent.py          # Full interactive agent (Gemini)
+│   ├── adk_agent.py                  # Google ADK interactive agent
+│   ├── server.py                     # ADK web server
+│   └── interactive_agent_adk.py      # Alternative ADK implementation
 │
 └── defenses/                         # Defense strategies
     ├── defense1/                     # Allowlist approach

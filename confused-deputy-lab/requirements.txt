@@ -1,6 +1,9 @@
 # Confused Deputy Lab - Python Dependencies
 
-# Google Generative AI (for Gemini 2.0 Flash)
+# Google ADK (Agent Development Kit) - Primary agent framework
+google-adk>=0.1.0
+
+# Google Generative AI (for Gemini 2.0 Flash) - Used by ADK
 google-genai>=0.2.0
 
 # Web requests
