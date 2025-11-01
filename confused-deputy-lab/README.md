@@ -2,7 +2,40 @@
 
 > **Teaching objective**: Demonstrate that an agent's attack surface is greater than the sum of its tools.
 
-This lab teaches the **Confused Deputy** vulnerability in AI agents using **Google ADK**, where combining seemingly harmless tools creates a security vulnerability that allows data exfiltration.
+---
+
+## 🔍 What is the Confused Deputy Problem?
+
+The **Confused Deputy** is a classic computer security problem where a program with elevated privileges is **tricked into misusing its authority** by an attacker. The "deputy" (the privileged program) is "confused" into performing actions on behalf of the attacker that it shouldn't allow.
+
+### Classic Example: Compiler Attack (1988)
+
+In the original example, a compiler (the deputy) had permission to:
+1. Read user source code files
+2. Write to protected system directories (to install compiled programs)
+
+An attacker could trick the compiler by:
+- Asking it to compile a malicious program
+- Specifying the output file as `/etc/passwd` (a protected system file)
+
+The compiler, confused about whose authority it was acting under, would write the attacker's code to the protected file!
+
+### In AI Agents: Tool Composition Attacks
+
+AI agents face the same problem, but with **tools** instead of file permissions:
+
+**The Deputy**: An AI agent with access to multiple tools
+**The Confusion**: The agent doesn't realize that combining certain tools creates a security vulnerability
+**The Attack**: A user tricks the agent into chaining tools together in a malicious way
+
+**Example in this lab:**
+```
+Tool 1: read_document() - Can access confidential files
+Tool 2: fetch_web_data() - Can make HTTP requests
+Combined: Read confidential data + Send it to attacker's URL = Data exfiltration!
+```
+
+The agent is the "confused deputy" because it has legitimate access to both tools but doesn't understand that **combining them** enables an attack.
 
 ---
 
@@ -152,7 +185,7 @@ adk web defenses/defense1
 - ❌ Can't detect cross-tool attacks
 - ❌ No process isolation
 
-[📖 Defense 1 Documentation](defenses/defense1/README.md)
+[📖 Defense 1 Documentation](confused-deputy-lab/defenses/defense1/README.md)
 
 ---
 
@@ -180,7 +213,7 @@ adk web defenses/defense2
 - ⚠️ More complex setup
 - ⚠️ Requires MCP server
 
-[📖 Defense 2 Documentation](defenses/defense2/README.md)
+[📖 Defense 2 Documentation](confused-deputy-lab/defenses/defense2/README.md)
 
 ---
 
@@ -232,7 +265,7 @@ View your traces at: https://app.arize.com
 
 **Bonus: Security Monitoring**
 Set up alerts to detect Confused Deputy attacks in real-time:
-📖 [Arize Security Monitors Setup Guide](defenses/arize_security_monitors.md)
+📖 [Arize Security Monitors Setup Guide](confused-deputy-lab/defenses/arize_security_monitors.md)
 
 This guide includes:
 - 3 pre-configured monitors (exfiltration detection, blocked domains, violation rate)
