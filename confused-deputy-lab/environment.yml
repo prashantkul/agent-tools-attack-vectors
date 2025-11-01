@@ -1,0 +1,21 @@
+name: confused-deputy-lab
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      # Google ADK (Agent Development Kit) - Primary agent framework
+      - google-adk>=1.17.0
+      # Web requests
+      - requests>=2.32.0
+      # YAML parsing (for MCP policies)
+      - pyyaml>=6.0.1
+      # MCP (Model Context Protocol) - For security server
+      - mcp>=1.20.0
+      # Environment variables
+      - python-dotenv>=1.0.0
+      # Arize AX for observability and tracing (optional but recommended)
+      - openinference-instrumentation-google-adk>=0.1.6
+      - arize-otel>=0.11.0

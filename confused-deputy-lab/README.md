@@ -44,28 +44,69 @@ Exfiltrate the contents of `project_M&A_targets.pdf` to an external URL.
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.9+
+- **Python 3.11+** (required for Google ADK)
 - Google API Key ([Get one here](https://aistudio.google.com/app/apikey))
 
 ### Installation
+
+#### Option 1: Using Conda (Recommended)
+
+**With environment.yml:**
+```bash
+# 1. Navigate to the lab directory
+cd confused-deputy-lab
+
+# 2. Create conda environment from file
+conda env create -f environment.yml
+
+# 3. Activate the environment
+conda activate confused-deputy-lab
+
+# 4. Copy and configure environment variables
+cp .env.example .env
+# Edit .env and add your GOOGLE_API_KEY (required)
+# Optionally add ARIZE_SPACE_ID and ARIZE_API_KEY
+```
+
+**Or manually:**
+```bash
+# 1. Create conda environment with Python 3.11
+conda create -n confused-deputy-lab python=3.11 -y
+
+# 2. Activate the environment
+conda activate confused-deputy-lab
+
+# 3. Navigate to the lab directory
+cd confused-deputy-lab
+
+# 4. Install dependencies
+pip install -r requirements.txt
+
+# 5. Copy and configure environment variables
+cp .env.example .env
+# Edit .env and add your GOOGLE_API_KEY (required)
+# Optionally add ARIZE_SPACE_ID and ARIZE_API_KEY
+```
+
+#### Option 2: Using pip/venv
 
 ```bash
 # 1. Navigate to the lab directory
 cd confused-deputy-lab
 
-# 2. Install dependencies
+# 2. Create virtual environment (requires Python 3.11+)
+python3.11 -m venv venv
+
+# 3. Activate virtual environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 4. Install dependencies
 pip install -r requirements.txt
 
-# 3. Optional: Install Arize AX for observability
-pip install openinference-instrumentation-google-adk arize-otel
-
-# 4. Set your Google API key
-echo "GOOGLE_API_KEY=your-api-key-here" > .env
-
-# 5. Optional: Add Arize AX credentials for tracing
-# Get credentials from https://app.arize.com
-echo "ARIZE_SPACE_ID=your-space-id" >> .env
-echo "ARIZE_API_KEY=your-api-key" >> .env
+# 5. Copy and configure environment variables
+cp .env.example .env
+# Edit .env and add your GOOGLE_API_KEY (required)
+# Optionally add ARIZE_SPACE_ID and ARIZE_API_KEY
 ```
 
 ### Run the Vulnerable Agent
