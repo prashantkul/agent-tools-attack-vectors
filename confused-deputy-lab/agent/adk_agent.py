@@ -7,14 +7,43 @@ A real agent implementation with custom tools for the Confused Deputy CTF.
 import os
 from pathlib import Path
 import requests
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+env_path = Path(__file__).parent.parent.parent / ".env"
+if env_path.exists():
+    load_dotenv(env_path)
 
 # Google ADK imports
 from google.adk.agents import Agent
 from google.adk.tools import FunctionTool
 
+# Arize AX Observability (optional - only if credentials provided)
+ARIZE_ENABLED = False
+try:
+    from arize.otel import register
+    from openinference.instrumentation.google_adk import GoogleADKInstrumentor
+
+    space_id = os.environ.get("ARIZE_SPACE_ID")
+    api_key = os.environ.get("ARIZE_API_KEY")
+
+    if space_id and api_key:
+        tracer_provider = register(
+            space_id=space_id,
+            api_key=api_key,
+            project_name="confused-deputy-lab-vulnerable"
+        )
+        GoogleADKInstrumentor().instrument(tracer_provider=tracer_provider)
+        ARIZE_ENABLED = True
+        print("✅ Arize AX tracing enabled for Vulnerable Agent")
+except ImportError:
+    print("ℹ️  Arize AX not installed. Install with: pip install openinference-instrumentation-google-adk arize-otel")
+except Exception as e:
+    print(f"ℹ️  Arize AX not configured: {e}")
+
 # Configuration
 DOCS_DIR = Path(__file__).parent.parent / "documents"
-MODEL = "gemini-2.0-flash-exp"
+MODEL = "gemini-2.5-flash"
 
 
 # Define custom tool functions
@@ -124,6 +153,11 @@ IMPORTANT RULES:
     return agent
 
 
+# Create the root_agent instance for ADK web UI
+# This is required by the ADK web server
+root_agent = create_financial_analyst_agent()
+
+
 def run_interactive_cli():
     """Run an interactive CLI chat session with the agent."""
     print("\n" + "="*70)
@@ -138,10 +172,12 @@ def run_interactive_cli():
     if not api_key:
         print("❌ Error: GOOGLE_API_KEY environment variable not set")
         print("Please set it with: export GOOGLE_API_KEY='your-api-key'")
+        print("Or add it to the .env file in the project root")
         return
 
     # Set API key for ADK (it uses GOOGLE_GENAI_API_KEY internally)
-    os.environ["GOOGLE_GENAI_API_KEY"] = api_key
+    if not os.environ.get("GOOGLE_GENAI_API_KEY"):
+        os.environ["GOOGLE_GENAI_API_KEY"] = api_key
 
     # Create the agent
     print("Creating agent...")
@@ -190,20 +226,22 @@ def run_with_web_ui():
     if not api_key:
         print("\n❌ Error: GOOGLE_API_KEY environment variable not set")
         print("Please set it with: export GOOGLE_API_KEY='your-api-key'")
+        print("Or add it to the .env file in the project root")
         return
 
     # Set API key for ADK
-    os.environ["GOOGLE_GENAI_API_KEY"] = api_key
+    if not os.environ.get("GOOGLE_GENAI_API_KEY"):
+        os.environ["GOOGLE_GENAI_API_KEY"] = api_key
 
-    # Create the agent
-    agent = create_financial_analyst_agent()
+    print("\n✓ Agent configuration loaded successfully!")
+    print("\nThe root_agent is now exposed and ready for ADK web server.")
+    print("\nTo use the ADK Web UI, run from the project root:")
+    print("  cd confused-deputy-lab")
+    print("  adk web agent")
+    print("\nOr specify the module directly:")
+    print("  adk web --agent agent.adk_agent:root_agent")
 
-    print("\n✓ Agent created successfully!")
-    print("\nTo use the ADK Web UI, run:")
-    print("  adk web --agent agent.adk_agent:create_financial_analyst_agent")
-    print("\nOr create a server.py file and use ADK's serve functionality.")
-
-    return agent
+    return root_agent
 
 
 def run_demo_attack():

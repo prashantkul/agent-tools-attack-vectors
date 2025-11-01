@@ -12,14 +12,13 @@ requests>=2.31.0
 # YAML parsing (for MCP policies)
 pyyaml>=6.0.1
 
-# Dashboard and visualization
-streamlit>=1.28.0
-plotly>=5.17.0
-pandas>=2.1.0
+# MCP (Model Context Protocol) - For security server
+mcp>=1.0.0
 
-# Data validation and utilities
-python-dateutil>=2.8.2
+# Environment variables
+python-dotenv>=1.0.0
 
-# Optional: For advanced security testing
-# pytest>=7.4.0
-# promptfoo>=0.1.0
+# Optional: Arize AX for observability and tracing
+# Install with: pip install openinference-instrumentation-google-adk arize-otel
+# openinference-instrumentation-google-adk>=0.1.0
+# arize-otel>=0.1.0
