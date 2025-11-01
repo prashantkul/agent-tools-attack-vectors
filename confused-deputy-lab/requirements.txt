@@ -1,24 +1,20 @@
 # Confused Deputy Lab - Python Dependencies
 
 # Google ADK (Agent Development Kit) - Primary agent framework
-google-adk>=0.1.0
-
-# Google Generative AI (for Gemini 2.0 Flash) - Used by ADK
-google-genai>=0.2.0
+google-adk>=1.17.0
 
 # Web requests
-requests>=2.31.0
+requests>=2.32.0
 
 # YAML parsing (for MCP policies)
 pyyaml>=6.0.1
 
 # MCP (Model Context Protocol) - For security server
-mcp>=1.0.0
+mcp>=1.20.0
 
 # Environment variables
 python-dotenv>=1.0.0
 
-# Optional: Arize AX for observability and tracing
-# Install with: pip install openinference-instrumentation-google-adk arize-otel
-# openinference-instrumentation-google-adk>=0.1.0
-# arize-otel>=0.1.0
+# Arize AX for observability and tracing (optional but recommended)
+openinference-instrumentation-google-adk>=0.1.6
+arize-otel>=0.11.0
