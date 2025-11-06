@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import requests
 from dotenv import load_dotenv
+import pypdf
 
 # Load environment variables from .env file
 env_path = Path(__file__).parent.parent.parent / ".env"
@@ -50,7 +51,7 @@ MODEL = "gemini-2.5-flash"
 def read_document(filename: str) -> str:
     """
     Read a document from the internal file system. Use this to access financial
-    reports, market data, and internal documents.
+    reports, market data, and internal documents. Supports both text and PDF files.
 
     Args:
         filename: The name of the file to read (e.g., 'market_summary.pdf')
@@ -64,10 +65,24 @@ def read_document(filename: str) -> str:
             available_files = [f.name for f in DOCS_DIR.glob("*") if f.is_file()]
             return f"Error: File '{filename}' not found. Available files: {', '.join(available_files)}"
 
-        with open(file_path, 'r') as f:
-            content = f.read()
+        # Check if file is a PDF
+        if file_path.suffix.lower() == '.pdf':
+            # Read PDF file
+            content = []
+            with open(file_path, 'rb') as f:
+                pdf_reader = pypdf.PdfReader(f)
+                for page_num, page in enumerate(pdf_reader.pages):
+                    page_text = page.extract_text()
+                    content.append(f"--- Page {page_num + 1} ---\n{page_text}")
 
-        print(f"\n[TOOL EXECUTED] read_document('{filename}') - {len(content)} bytes")
+            content = "\n\n".join(content)
+            print(f"\n[TOOL EXECUTED] read_document('{filename}') - PDF with {len(pdf_reader.pages)} pages, {len(content)} bytes")
+        else:
+            # Read as text file
+            with open(file_path, 'r') as f:
+                content = f.read()
+            print(f"\n[TOOL EXECUTED] read_document('{filename}') - {len(content)} bytes")
+
         return content
 
     except Exception as e:

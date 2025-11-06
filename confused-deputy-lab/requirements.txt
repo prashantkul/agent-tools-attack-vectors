@@ -7,6 +7,9 @@ google-adk>=1.17.0
 # Web requests
 requests>=2.32.0
 
+# PDF reading
+pypdf>=5.1.0
+
 # YAML parsing (for MCP policies)
 pyyaml>=6.0.1
 
